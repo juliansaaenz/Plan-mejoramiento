@@ -74,9 +74,12 @@
     <Compile Include="Datos\ConexionBD.cs" />
     <Compile Include="Datos\FichaD.cs" />
     <Compile Include="Datos\InstructorD.cs" />
+    <Compile Include="Datos\PlanMejoramientoD.cs" />
     <Compile Include="Datos\ProgramaD.cs" />
+    <Compile Include="Logica\AprendizL.cs" />
     <Compile Include="Logica\FichaL.cs" />
     <Compile Include="Logica\InstructorL.cs" />
+    <Compile Include="Logica\PlanMejoramientoL.cs" />
     <Compile Include="Logica\ProgramaL.cs" />
     <Compile Include="Modelo\ActividadesPlan.cs" />
     <Compile Include="Modelo\Aprendiz.cs" />
