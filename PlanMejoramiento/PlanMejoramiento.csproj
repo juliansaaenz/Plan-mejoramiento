@@ -43,7 +43,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExcelDataReader, Version=3.8.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.8.0\lib\net462\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.8.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.8.0\lib\net462\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -67,6 +77,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Vista\Administrador\CargaMasiva.aspx" />
+    <Content Include="Vista\Administrador\GestionAprendices.aspx" />
+    <Content Include="Vista\Administrador\GestionFichas.aspx" />
+    <Content Include="Vista\Administrador\GestionInstructores.aspx" />
+    <Content Include="Vista\Administrador\GestionProgramas.aspx" />
+    <Content Include="Vista\Aprendiz\MisPlanes.aspx" />
+    <Content Include="Vista\Aprendiz\SubirEvidencias.aspx" />
+    <Content Include="Vista\Index.aspx" />
+    <Content Include="Vista\Instructor\ConsultarAprendices.aspx" />
+    <Content Include="Vista\Instructor\FormularioPlan.aspx" />
+    <Content Include="Vista\Instructor\HistorialPlanes.aspx" />
+    <Content Include="Vista\Login.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -76,11 +98,13 @@
     <Compile Include="Datos\InstructorD.cs" />
     <Compile Include="Datos\PlanMejoramientoD.cs" />
     <Compile Include="Datos\ProgramaD.cs" />
+    <Compile Include="Datos\UsuarioD.cs" />
     <Compile Include="Logica\AprendizL.cs" />
     <Compile Include="Logica\FichaL.cs" />
     <Compile Include="Logica\InstructorL.cs" />
     <Compile Include="Logica\PlanMejoramientoL.cs" />
     <Compile Include="Logica\ProgramaL.cs" />
+    <Compile Include="Logica\UsuarioL.cs" />
     <Compile Include="Modelo\ActividadesPlan.cs" />
     <Compile Include="Modelo\Aprendiz.cs" />
     <Compile Include="Modelo\AsignacionInstructorFicha.cs" />
@@ -101,9 +125,101 @@
     <Compile Include="Modelo\Rol.cs" />
     <Compile Include="Modelo\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Vista\Administrador\CargaMasiva.aspx.cs">
+      <DependentUpon>CargaMasiva.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Administrador\CargaMasiva.aspx.designer.cs">
+      <DependentUpon>CargaMasiva.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionAprendices.aspx.cs">
+      <DependentUpon>GestionAprendices.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionAprendices.aspx.designer.cs">
+      <DependentUpon>GestionAprendices.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionFichas.aspx.cs">
+      <DependentUpon>GestionFichas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionFichas.aspx.designer.cs">
+      <DependentUpon>GestionFichas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionInstructores.aspx.cs">
+      <DependentUpon>GestionInstructores.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionInstructores.aspx.designer.cs">
+      <DependentUpon>GestionInstructores.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionProgramas.aspx.cs">
+      <DependentUpon>GestionProgramas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Administrador\GestionProgramas.aspx.designer.cs">
+      <DependentUpon>GestionProgramas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Aprendiz\MisPlanes.aspx.cs">
+      <DependentUpon>MisPlanes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Aprendiz\MisPlanes.aspx.designer.cs">
+      <DependentUpon>MisPlanes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Aprendiz\SubirEvidencias.aspx.cs">
+      <DependentUpon>SubirEvidencias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Aprendiz\SubirEvidencias.aspx.designer.cs">
+      <DependentUpon>SubirEvidencias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Instructor\ConsultarAprendices.aspx.cs">
+      <DependentUpon>ConsultarAprendices.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Instructor\ConsultarAprendices.aspx.designer.cs">
+      <DependentUpon>ConsultarAprendices.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Instructor\FormularioPlan.aspx.cs">
+      <DependentUpon>FormularioPlan.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Instructor\FormularioPlan.aspx.designer.cs">
+      <DependentUpon>FormularioPlan.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Instructor\HistorialPlanes.aspx.cs">
+      <DependentUpon>HistorialPlanes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Instructor\HistorialPlanes.aspx.designer.cs">
+      <DependentUpon>HistorialPlanes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Vista\Site.Master.cs">
+      <DependentUpon>Site.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Vista\Site.Master.designer.cs">
+      <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="Vista\Site.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -111,9 +227,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Vista\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

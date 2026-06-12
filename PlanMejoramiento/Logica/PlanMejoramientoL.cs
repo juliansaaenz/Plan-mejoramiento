@@ -1,8 +1,10 @@
-﻿using PlanMejoramiento.Datos;
+﻿using ExcelDataReader;
+using PlanMejoramiento.Datos;
 using PlanMejoramiento.Modelo;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 namespace PlanMejoramiento.Logica
 {
@@ -85,6 +87,7 @@ namespace PlanMejoramiento.Logica
 
             if (string.IsNullOrEmpty(observacionesInstructor))
                 observacionesInstructor = "Sin observaciones adicionales.";
+
             string textoEstructurado = $"[RESULTADO]: {resultadoIncumplido} | " +
                                        $"[ACTIVIDADES]: {actividadesARealizar} | " +
                                        $"[NOTAS]: {observacionesInstructor}";
@@ -147,6 +150,94 @@ namespace PlanMejoramiento.Logica
                 throw new ArgumentException("El identificador del aprendiz no es válido para consultar sus datos.");
 
             return oPlanD.MtConsultarDatosAprendiz(idAprendiz);
+        }
+        public DataTable MtConsultarEvidencias(int idPlan)
+        {
+            if (idPlan <= 0)
+                throw new ArgumentException("Debe seleccionar un plan de mejoramiento válido para consultar sus evidencias.");
+
+            return oPlanD.MtConsultarEvidenciasPorPlan(idPlan);
+        }
+
+        public bool MtRegistrarObservacionEvidencia(int idEvidencia, string observaciones)
+        {
+            if (idEvidencia <= 0)
+                throw new ArgumentException("Debe seleccionar una evidencia válida para poder calificarla.");
+
+            if (string.IsNullOrWhiteSpace(observaciones))
+                throw new ArgumentException("La observación o retroalimentación del instructor no puede estar vacía.");
+
+            return oPlanD.MtRegistrarObservacionInstructorEvidencia(idEvidencia, observaciones);
+        }
+        public bool MtProcesarCargaMasivaExcel(Stream flujoArchivo, out List<string> listaErrores)
+        {
+            listaErrores = new List<string>();
+            DataTable dtExcel = new DataTable();
+
+            using (var reader = ExcelReaderFactory.CreateReader(flujoArchivo))
+            {
+                var result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                {
+                    ConfigureDataTable = (_) => new ExcelDataTableConfiguration() { UseHeaderRow = true }
+                });
+                dtExcel = result.Tables[0];
+            }
+
+            string[] columnasRequeridas = { "TipoDocumento", "NumeroDocumento", "Nombres", "Apellidos", "Correo", "Telefono", "IdCentroFormacion", "IdFicha", "IdCiudadResidencia" };
+            foreach (string col in columnasRequeridas)
+            {
+                if (!dtExcel.Columns.Contains(col))
+                {
+                    listaErrores.Add($"Error de Estructura: La columna obligatoria '{col}' no se encuentra en el archivo Excel.");
+                }
+            }
+
+            if (listaErrores.Count > 0) return false;
+
+            int numeroFila = 2;
+
+            List<string> documentosEnExcel = new List<string>();
+            List<string> correosEnExcel = new List<string>();
+
+            foreach (DataRow fila in dtExcel.Rows)
+            {
+                string tipoDoc = fila["TipoDocumento"].ToString().Trim();
+                string numDoc = fila["NumeroDocumento"].ToString().Trim();
+                string nombres = fila["Nombres"].ToString().Trim();
+                string apellidos = fila["Apellidos"].ToString().Trim();
+                string correo = fila["Correo"].ToString().Trim();
+
+                if (string.IsNullOrEmpty(numDoc) || string.IsNullOrEmpty(nombres) || string.IsNullOrEmpty(apellidos) || string.IsNullOrEmpty(correo))
+                {
+                    listaErrores.Add($"Fila {numeroFila}: Contiene campos obligatorios vacíos.");
+                    numeroFila++;
+                    continue;
+                }
+
+                if (documentosEnExcel.Contains(numDoc))
+                    listaErrores.Add($"Fila {numeroFila}: El documento '{numDoc}' está duplicado dentro del mismo archivo Excel.");
+                else
+                    documentosEnExcel.Add(numDoc);
+
+                if (correosEnExcel.Contains(correo))
+                    listaErrores.Add($"Fila {numeroFila}: El correo '{correo}' está duplicado dentro del mismo archivo Excel.");
+                else
+                    correosEnExcel.Add(correo);
+
+                if (oPlanD.MtExisteDocumento(numDoc))
+                    listaErrores.Add($"Fila {numeroFila}: El número de documento '{numDoc}' ya está registrado en el sistema.");
+
+                if (oPlanD.MtExisteCorreo(correo))
+                    listaErrores.Add($"Fila {numeroFila}: El correo electrónico '{correo}' ya se encuentra asignado a otro usuario.");
+
+                numeroFila++;
+            }
+            if (listaErrores.Count > 0)
+            {
+                return false;
+            }
+
+            return oPlanD.MtInsertarAprendicesMasivo(dtExcel);
         }
     }
 }

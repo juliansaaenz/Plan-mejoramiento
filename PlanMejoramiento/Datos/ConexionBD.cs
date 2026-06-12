@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -8,7 +9,7 @@ namespace PlanMejoramiento.Datos
 {
     public class ConexionBD
     {
-        public static readonly string CadenaConexion = "Data Source=localhost;Initial Catalog=PlanMejoramiento;Integrated Security=True";
+        private static readonly string CadenaConexion = ConfigurationManager.ConnectionStrings["ConexionBD"].ConnectionString;
 
         public static SqlConnection MtAbrirConexion()
         {

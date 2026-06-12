@@ -50,7 +50,7 @@ namespace PlanMejoramiento.Datos
                                 Id = Convert.ToInt32(dr["Id"]),
                                 NumeroFicha = dr["NumeroFicha"].ToString(),
                                 FechaInicio = Convert.ToDateTime(dr["FechaInicio"]),
-                                FechaFinalizacion = Convert.ToDateTime(dr.["FechaFinalizacion"]),
+                                FechaFinalizacion = Convert.ToDateTime(dr["FechaFinalizacion"]),
                                 Descripcion = dr["Descripcion"].ToString(),
                                 Estado = dr["Estado"].ToString(),
                                 IdPrograma = Convert.ToInt32(dr["IdPrograma"]),

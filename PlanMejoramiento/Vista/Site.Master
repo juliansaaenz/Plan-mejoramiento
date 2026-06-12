@@ -1,0 +1,112 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="PlanMejoramiento.Vista.Site" %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SENA - Sistema de Planes de Mejoramiento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+</head>
+<body class="bg-gray-100 font-sans">
+    <form id="form1" runat="server">
+
+        <nav class="bg-emerald-600 text-white p-4 shadow-md flex justify-between items-center fixed top-0 left-0 right-0 z-50 h-16">
+            <div class="font-bold text-lg tracking-wide">
+                SENA | Planes de Mejoramiento
+            </div>
+
+            <asp:LinkButton ID="btnVerPerfil" runat="server" OnClick="btnVerPerfil_Click"
+                CssClass="flex items-center gap-3 py-1.5 px-3 rounded-xl hover:bg-gray-100 transition group text-left focus:outline-none">
+                <div class="w-8 h-8 rounded-lg bg-orange-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-orange-600/10 group-hover:scale-105 transition">
+                    <asp:Label ID="lblInicialesMaster" runat="server" Text="U"></asp:Label>
+                </div>
+                <div class="hidden md:block">
+                    <span class="block text-xs font-bold text-gray-800 leading-tight">
+                        <asp:Label ID="lblNombreUsuario" runat="server" Text="Usuario..."></asp:Label>
+                    </span>
+                    <span class="block text-[10px] text-gray-400 font-medium">Ver mis datos</span>
+                </div>
+            </asp:LinkButton>
+        </nav>
+
+        <div class="flex pt-16 min-h-screen">
+
+            <aside class="w-64 bg-gray-800 text-gray-100 p-4 space-y-6 min-h-screen shadow-lg">
+                <asp:Panel ID="pnlMenuAdministrador" runat="server" Visible="false" class="space-y-1">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-2 font-bold">Módulo Administrador</p>
+                    <a href="../Administrador/GestionProgramas.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                        <i class="fas fa-graduation-cap w-5"></i>Programas</a>
+                    <a href="../Administrador/GestionFichas.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                        <i class="fas fa-id-card w-5"></i>Fichas</a>
+                    <a href="../Administrador/GestionInstructores.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                        <i class="fas fa-chalkboard-user w-5"></i>Instructores</a>
+                    <a href="../Administrador/GestionAprendices.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                        <i class="fas fa-user-graduate w-5"></i>Aprendices</a>
+                    <a href="../Administrador/CargaMasiva.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition border-t border-gray-700 mt-2 pt-2">
+                        <i class="fas fa-file-upload w-5 text-emerald-500"></i>Carga Masiva</a>
+                </asp:Panel>
+
+                <asp:Panel ID="pnlMenuInstructor" runat="server" Visible="false" class="space-y-1">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-2 font-bold">Módulo Instructor</p>
+                    <a href="../Instructor/ConsultarAprendices.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition">
+                        <i class="fas fa-graduation-cap w-5"></i>Consultar Aprendices</a>
+                </asp:Panel>
+
+                <asp:Panel ID="pnlMenuAprendiz" runat="server" Visible="false" class="space-y-1">
+                    <p class="text-xs text-gray-500 uppercase tracking-wider mb-2 font-bold">Módulo Aprendiz</p>
+                    <a href="Aprendiz/MisPlanes.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition">🎓 Estado Académico</a>
+                    <a href="Aprendiz/SubirEvidencias.aspx" class="block py-2 px-4 rounded text-gray-300 hover:bg-gray-700 hover:text-white transition">📤 Subir Evidencias</a>
+                </asp:Panel>
+
+            </aside>
+
+            <main class="flex-1 p-8 bg-gray-50">
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                </asp:ContentPlaceHolder>
+            </main>
+        </div>
+        <asp:Panel ID="pnlModalPerfil" runat="server" Visible="false" 
+               CssClass="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+        <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-md overflow-hidden transform transition-all scale-100">
+            <div class="bg-gradient-to-r from-orange-600 to-amber-500 p-6 text-white text-center relative">
+                <div class="w-20 h-20 bg-white text-orange-600 text-3xl font-black rounded-2xl mx-auto flex items-center justify-center shadow-lg border-4 border-white/20 mb-3">
+                    <asp:Label ID="lblModalIniciales" runat="server" Text="U"></asp:Label>
+                </div>
+                <h3 class="text-xl font-black tracking-tight"><asp:Label ID="lblModalNombre" runat="server" Text="-"></asp:Label></h3>
+                <p class="text-xs opacity-80 mt-1">Expediente de Identidad Académica</p>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Identificación</span>
+                        <p class="text-xs font-mono font-bold text-gray-700 mt-0.5"><asp:Label ID="lblModalDocumento" runat="server" Text="-"></asp:Label></p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Rol de Sistema</span>
+                        <p class="text-xs font-bold text-orange-600 mt-0.5"><asp:Label ID="lblModalRol" runat="server" Text="Aprendiz"></asp:Label></p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Programa de Formación</span>
+                    <p class="text-xs font-bold text-gray-700 mt-0.5"><asp:Label ID="lblModalPrograma" runat="server" Text="-"></asp:Label></p>
+                </div>
+
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Ficha de Caracterización</span>
+                    <p class="text-sm font-black text-gray-800 mt-0.5"><asp:Label ID="lblModalFicha" runat="server" Text="-"></asp:Label></p>
+                </div>
+            </div>
+
+            <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+                <asp:Button ID="btnCerrarModal" runat="server" Text="Entendido, Cerrar" OnClick="btnCerrarModal_Click"
+                            CssClass="bg-gray-800 hover:bg-gray-900 text-white font-bold text-xs py-2.5 px-5 rounded-xl transition cursor-pointer shadow-sm" />
+            </div>
+        </div>
+    </asp:Panel>
+    </form>
+</body>
+</html>
