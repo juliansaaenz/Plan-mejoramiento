@@ -1,7 +1,8 @@
-﻿using System;
-using System.Data;
-using PlanMejoramiento.Datos;
+﻿using PlanMejoramiento.Datos;
 using PlanMejoramiento.Modelo;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace PlanMejoramiento.Logica
 {
@@ -25,20 +26,47 @@ namespace PlanMejoramiento.Logica
             return oPlanD.MtConsultarResultadosPendientes(idAprendiz);
         }
 
-        public int MtCrearPlanMejoramiento(PlanesMejoramiento oPlanesMejoramiento)
+        public bool MtCrearPlanMejoramientoCompleto(PlanesMejoramiento oPlanesMejoramiento, List<string> listaActividades, List<int> listaIdResultados)
         {
             if (oPlanesMejoramiento == null)
                 throw new ArgumentNullException("Los datos del plan de mejoramiento no pueden estar vacíos.");
 
-            if (oPlanesMejoramiento.IdAprendiz <= 0 || oPlanesMejoramiento.IdInstructor <= 0)
-                throw new ArgumentException("Debe seleccionar un aprendiz y un instructor válidos.");
+            if (oPlanesMejoramiento.IdAprendiz <= 0)
+                throw new ArgumentException("Debe seleccionar un aprendiz válido para asignarle el plan.");
 
-            if (string.IsNullOrWhiteSpace(oPlanesMejoramiento.TipoPlan))
-                throw new ArgumentException("El tipo de plan (Interno / Comité) es obligatorio.");
+            if (oPlanesMejoramiento.IdInstructor <= 0)
+                throw new ArgumentException("El identificador del instructor no es válido.");
 
-            oPlanesMejoramiento.EstadoPlan = "En Proceso";
+            if (string.IsNullOrEmpty(oPlanesMejoramiento.TipoPlan))
+                throw new ArgumentException("El tipo de plan (Interno o Comité) es obligatorio.");
 
-            return oPlanD.MtCrearPlanMejoramiento(oPlanesMejoramiento);
+            if (oPlanesMejoramiento.FechaLimite <= DateTime.Now)
+                throw new ArgumentException("La fecha límite establecida debe ser posterior a la fecha y hora actual.");
+
+            if (string.IsNullOrEmpty(oPlanesMejoramiento.EstadoPlan))
+            {
+                oPlanesMejoramiento.EstadoPlan = "Asignado";
+            }
+
+            if (listaActividades == null || listaActividades.Count == 0)
+                throw new ArgumentException("Debe registrar al menos una actividad pedagógica para poder crear el plan.");
+
+            foreach (string actividad in listaActividades)
+            {
+                if (string.IsNullOrEmpty(actividad))
+                    throw new ArgumentException("Las descripciones de las actividades no pueden estar vacías o contener solo espacios.");
+            }
+
+            if (listaIdResultados == null || listaIdResultados.Count == 0)
+                throw new ArgumentException("Debe asociar obligatoriamente al menos un resultado de aprendizaje (RAP) al plan.");
+
+            foreach (int idResultado in listaIdResultados)
+            {
+                if (idResultado <= 0)
+                    throw new ArgumentException("Uno o más identificadores de los resultados seleccionados no son válidos.");
+            }
+
+            return oPlanD.MtCrearPlanMejoramientoCompleto(oPlanesMejoramiento, listaActividades, listaIdResultados);
         }
 
         public bool MtRegistrarGestionInstructor(int idPlan, string resultadoIncumplido, string actividadesARealizar, DateTime fechaLimite, string observacionesInstructor)
@@ -62,6 +90,63 @@ namespace PlanMejoramiento.Logica
                                        $"[NOTAS]: {observacionesInstructor}";
 
             return oPlanD.MtAsignarDetallesInstructor(idPlan, fechaLimite, textoEstructurado);
+        }
+        public bool MtAprendizSubirEvidencia(string rutaArchivo, string tipoArchivo, int idActividad)
+        {
+            if (string.IsNullOrEmpty(rutaArchivo))
+                throw new ArgumentException("Debe seleccionar o cargar un archivo válido para la evidencia.");
+
+            if (string.IsNullOrEmpty(tipoArchivo))
+                throw new ArgumentException("El tipo de archivo no puede estar vacío.");
+
+            if (idActividad <= 0)
+                throw new ArgumentException("Debe seleccionar la actividad pedagógica a la cual le va a subir la evidencia.");
+
+            string extensionFormateada = tipoArchivo.ToUpper().Replace(".", "");
+
+            return oPlanD.MtAprendizInsertarEvidencia(rutaArchivo, extensionFormateada, idActividad);
+        }
+        public string MtAprendizConsultarEstadoAcademico(int idAprendiz)
+        {
+            if (idAprendiz <= 0)
+                throw new ArgumentException("El identificador del aprendiz no es válido.");
+
+            return oPlanD.MtAprendizConsultarEstadoAcademico(idAprendiz);
+        }
+        public DataTable MtAprendizConsultarObservaciones(int idPlan)
+        {
+            if (idPlan <= 0)
+                throw new ArgumentException("Debe seleccionar un plan de mejoramiento válido para ver sus observaciones.");
+
+            return oPlanD.MtAprendizConsultarObservacionesPlan(idPlan);
+        }
+        public DataTable MtAprendizConsultarPlanesAsignados(int idAprendiz)
+        {
+            if (idAprendiz <= 0)
+                throw new ArgumentException("El identificador del aprendiz no es válido para consultar los planes.");
+
+            return oPlanD.MtAprendizConsultarPlanesAsignados(idAprendiz);
+        }
+        public DataTable MtAprendizConsultarResultadosPendientes(int idAprendiz)
+        {
+            if (idAprendiz <= 0)
+                throw new ArgumentException("El identificador del aprendiz no es válido para consultar sus resultados.");
+
+            return oPlanD.MtConsultarResultadosPendientes(idAprendiz);
+        }
+        public DataTable MtAprendizConsultarFicha(int idAprendiz)
+        {
+            if (idAprendiz <= 0)
+                throw new ArgumentException("El identificador del aprendiz no es válido para consultar la ficha.");
+
+            return oPlanD.MtConsultarFichaAsignada(idAprendiz);
+        }
+        public DataTable MtAprendizConsultarDatos(int idAprendiz)
+        {
+            if (idAprendiz <= 0)
+                throw new ArgumentException("El identificador del aprendiz no es válido para consultar sus datos.");
+
+            return oPlanD.MtConsultarDatosAprendiz(idAprendiz);
         }
     }
 }
